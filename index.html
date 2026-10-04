@@ -125,6 +125,9 @@
             min-height: 44px;
         }
 
+        .cal-period.am { background: #f7f0e8; }
+        .cal-period.pm { background: #e8eef4; }
+
         .cal-cell {
             display: flex;
             flex-direction: column;
@@ -136,8 +139,21 @@
             gap: 2px;
         }
 
+        .cal-cell.am { background: #fdfbf7; }
+        .cal-cell.pm { background: #f7f9fb; }
+        .cal-cell.has-schedule { background: #f0ece4; }
+
         .cal-cell.today {
             background: #faf6f2;
+        }
+
+        .cal-cell.today.has-schedule {
+            background: #f5ede4;
+        }
+
+        .cal-cell.week-start,
+        .cal-period.week-start {
+            border-top: 1.5px solid #e0dcd4;
         }
 
         .cal-cell .cal-day-num {
@@ -435,9 +451,11 @@
 
             for (var w = 0; w < totalWeeks; w++) {
                 var weekStart = w * 7 - startDow + 1;
+                var isWeekStart = w > 0;
 
                 PERIODS.forEach(function(period) {
-                    html += '<div class="cal-period">' + period + '</div>';
+                    var periodClass = period === '上午' ? 'am' : 'pm';
+                    html += '<div class="cal-period ' + periodClass + (isWeekStart ? ' week-start' : '') + '">' + period + '</div>';
                     for (var dow = 0; dow < 7; dow++) {
                         var dayNum = weekStart + dow;
                         if (dayNum >= 1 && dayNum <= totalDays) {
@@ -461,14 +479,19 @@
                                 }
                             }
 
-                            html += '<div class="cal-cell' + (isToday ? ' today' : '') + '">';
+                            var classes = 'cal-cell ' + periodClass;
+                            if (isToday) classes += ' today';
+                            if (isWeekStart) classes += ' week-start';
+                            if (loc) classes += ' has-schedule';
+
+                            html += '<div class="' + classes + '">';
                             html += '<span class="cal-day-num">' + dayNum + '</span>';
                             if (loc) {
                                 html += '<span class="cal-tag cal-tag-' + loc + '">' + loc + '</span>';
                             }
                             html += '</div>';
                         } else {
-                            html += '<div class="cal-cell"></div>';
+                            html += '<div class="cal-cell' + (isWeekStart ? ' week-start' : '') + '"></div>';
                         }
                     }
                 });
