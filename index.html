@@ -374,7 +374,15 @@
 
         function getActiveData() {
             if (viewMode === 'next' && scheduleData.next) {
-                return scheduleData.next;
+                var n = scheduleData.next;
+                return {
+                    doctor: scheduleData.doctor,
+                    month: n.month,
+                    regular: n.regular,
+                    exceptions: n.exceptions || {},
+                    locations: scheduleData.locations,
+                    notice: scheduleData.notice
+                };
             }
             return scheduleData;
         }
