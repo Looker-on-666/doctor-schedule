@@ -124,6 +124,13 @@
             border-radius: 6px;
         }
 
+        .cal-header {
+            display: grid;
+            grid-template-columns: 36px repeat(7, 1fr);
+            gap: 3px;
+            padding-bottom: 0;
+        }
+
         .cal-period {
             display: flex;
             align-items: center;
@@ -161,10 +168,6 @@
 
         .cal-cell.today.has-schedule {
             background: #f5ede4;
-        }
-
-        .cal-week.cal-header {
-            padding-bottom: 0;
         }
 
         .cal-cell .cal-day-num {
@@ -254,10 +257,10 @@
             margin-bottom: 0;
         }
 
-        .loc-item.loc-东城 { border-left-color: #5b7a6a; }
-        .loc-item.loc-博爱堂 { border-left-color: #8b7332; }
-        .loc-item.loc-弘医堂 { border-left-color: #955539; }
-        .loc-item.loc-国医堂 { border-left-color: #4a5a7a; }
+        .loc-item.loc-东城 { border-left-color: #4a6b5a; }
+        .loc-item.loc-博爱堂 { border-left-color: #7a6328; }
+        .loc-item.loc-弘医堂 { border-left-color: #854530; }
+        .loc-item.loc-国医堂 { border-left-color: #3a4a6a; }
 
         .loc-name {
             font-size: 15px;
@@ -366,11 +369,11 @@
         const DAY_KEYS = { 1: '一', 2: '二', 3: '三', 4: '四', 5: '五', 6: '六', 0: '日' };
         const PERIODS = ['上午', '下午'];
         const LOCATION_COLORS = {
-            '东城': '#5b7a6a',
-            '博爱堂': '#8b7332',
-            '弘医堂': '#955539',
-            '国医堂': '#4a5a7a',
-            '停诊': '#9d2933'
+            '东城': '#4a6b5a',
+            '博爱堂': '#7a6328',
+            '弘医堂': '#854530',
+            '国医堂': '#3a4a6a',
+            '停诊': '#8d1f29'
         };
 
         let scheduleData;
@@ -453,7 +456,7 @@
             html += '<div class="cal-grid">';
 
             // Weekday header row
-            html += '<div class="cal-week cal-header">';
+            html += '<div class="cal-header">';
             html += '<div class="cal-corner"></div>';
             WEEKDAY_LABELS.forEach(function(label) {
                 html += '<div class="cal-weekday">' + label + '</div>';
