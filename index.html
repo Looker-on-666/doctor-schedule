@@ -94,9 +94,20 @@
         }
 
         .cal-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .cal-week {
             display: grid;
             grid-template-columns: 36px repeat(7, 1fr);
             gap: 3px;
+            padding: 3px 0;
+        }
+
+        .cal-week + .cal-week {
+            border-top: 2px solid #b8a88a;
         }
 
         .cal-corner {
@@ -152,9 +163,8 @@
             background: #f5ede4;
         }
 
-        .cal-cell.week-start,
-        .cal-period.week-start {
-            box-shadow: 0 -2px 0 0 #b8a88a;
+        .cal-week.cal-header {
+            padding-bottom: 0;
         }
 
         .cal-cell .cal-day-num {
@@ -443,21 +453,24 @@
             html += '<div class="cal-grid">';
 
             // Weekday header row
+            html += '<div class="cal-week cal-header">';
             html += '<div class="cal-corner"></div>';
             WEEKDAY_LABELS.forEach(function(label) {
                 html += '<div class="cal-weekday">' + label + '</div>';
             });
+            html += '</div>';
 
             // Calculate weeks
             var totalWeeks = Math.ceil((startDow + totalDays) / 7);
 
             for (var w = 0; w < totalWeeks; w++) {
                 var weekStart = w * 7 - startDow + 1;
-                var isWeekStart = w > 0;
+
+                html += '<div class="cal-week">';
 
                 PERIODS.forEach(function(period) {
                     var periodClass = period === '上午' ? 'am' : 'pm';
-                    html += '<div class="cal-period ' + periodClass + (isWeekStart ? ' week-start' : '') + '">' + period + '</div>';
+                    html += '<div class="cal-period ' + periodClass + '">' + period + '</div>';
                     for (var dow = 0; dow < 7; dow++) {
                         var dayNum = weekStart + dow;
                         if (dayNum >= 1 && dayNum <= totalDays) {
@@ -485,7 +498,6 @@
 
                             var classes = 'cal-cell ' + periodClass;
                             if (isToday) classes += ' today';
-                            if (isWeekStart) classes += ' week-start';
                             if (loc) classes += ' has-schedule';
 
                             html += '<div class="' + classes + '">';
@@ -495,10 +507,12 @@
                             }
                             html += '</div>';
                         } else {
-                            html += '<div class="cal-cell' + (isWeekStart ? ' week-start' : '') + '"></div>';
+                            html += '<div class="cal-cell"></div>';
                         }
                     }
                 });
+
+                html += '</div>'; // .cal-week
             }
 
             html += '</div>'; // .cal-grid
