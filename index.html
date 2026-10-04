@@ -44,41 +44,42 @@
             opacity: 0.9;
         }
 
-        /* Month nav */
-        .month-nav {
+        /* Month tabs */
+        .month-tabs {
             display: flex;
-            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
             justify-content: center;
-            gap: 20px;
-            padding: 14px 0;
         }
 
-        .month-nav button {
+        .month-tab {
             background: white;
             border: 1px solid #e0e6ed;
             border-radius: 10px;
-            width: 36px;
-            height: 36px;
+            padding: 10px 16px;
             font-size: 14px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.2s;
             color: #666;
+            font-weight: 500;
         }
 
-        .month-nav button:active {
-            background: #f0f4f8;
-            transform: scale(0.95);
+        .month-tab.active {
+            background: #4a90d9;
+            color: white;
+            border-color: #4a90d9;
+        }
+
+        .month-tab:active {
+            transform: scale(0.97);
         }
 
         .month-label {
+            text-align: center;
+            padding: 14px 0;
             font-size: 18px;
             font-weight: 600;
             color: #2c3e50;
-            min-width: 120px;
-            text-align: center;
         }
 
         /* Calendar */
@@ -351,12 +352,10 @@
             '停诊': '#ff4d4f'
         };
 
-        let currentYear, currentMonth;
+        let scheduleData;
+        let viewMode = 'current'; // 'current' or 'next'
 
         function init() {
-            const now = new Date();
-            currentYear = now.getFullYear();
-            currentMonth = now.getMonth();
             loadSchedule();
         }
 
@@ -364,30 +363,36 @@
             try {
                 const resp = await fetch('schedule.json?t=' + Date.now());
                 if (!resp.ok) throw new Error('Network error');
-                const data = await resp.json();
-                const [y, m] = data.month.split('-').map(Number);
-                currentYear = y;
-                currentMonth = m - 1;
-                render(data);
+                scheduleData = await resp.json();
+                viewMode = 'current';
+                render();
             } catch (e) {
                 document.getElementById('app').innerHTML =
                     '<div class="loading">数据加载失败，请稍后刷新重试</div>';
             }
         }
 
-        function render(data) {
-            const year = currentYear;
-            const month = currentMonth;
+        function getActiveData() {
+            if (viewMode === 'next' && scheduleData.next) {
+                return scheduleData.next;
+            }
+            return scheduleData;
+        }
+
+        function render() {
+            const data = getActiveData();
+            const [year, month] = data.month.split('-').map(Number);
+            const displayMonth = month - 1;
             const today = new Date();
-            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === displayMonth;
             const todayDate = isCurrentMonth ? today.getDate() : -1;
 
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
+            const firstDay = new Date(year, displayMonth, 1);
+            const lastDay = new Date(year, displayMonth + 1, 0);
             const startDow = (firstDay.getDay() + 6) % 7;
             const totalDays = lastDay.getDate();
 
-            const monthStr = year + '年' + (month + 1) + '月';
+            const monthStr = year + '年' + month + '月';
 
             let html = '';
 
@@ -397,12 +402,20 @@
             html += '<div class="subtitle">出诊安排</div>';
             html += '</div>';
 
-            // Month nav
-            html += '<div class="month-nav">';
-            html += '<button onclick="app.prevMonth()">&#9664;</button>';
-            html += '<span class="month-label">' + monthStr + '</span>';
-            html += '<button onclick="app.nextMonth()">&#9654;</button>';
-            html += '</div>';
+            // Month nav - only show if next month data exists
+            if (scheduleData.next) {
+                html += '<div class="month-tabs">';
+                html += '<button class="month-tab' + (viewMode === 'current' ? ' active' : '') + '" onclick="app.switchMonth(\'current\')">';
+                html += monthStr + '（本月）</button>';
+                
+                const [nextY, nextM] = scheduleData.next.month.split('-').map(Number);
+                const nextMonthStr = nextY + '年' + nextM + '月';
+                html += '<button class="month-tab' + (viewMode === 'next' ? ' active' : '') + '" onclick="app.switchMonth(\'next\')">';
+                html += nextMonthStr + '（下月）</button>';
+                html += '</div>';
+            } else {
+                html += '<div class="month-label">' + monthStr + '</div>';
+            }
 
             // Calendar
             html += '<div class="calendar">';
@@ -420,7 +433,7 @@
 
             // Day cells
             for (var d = 1; d <= totalDays; d++) {
-                var date = new Date(year, month, d);
+                var date = new Date(year, displayMonth, d);
                 var dateStr = formatDate(date);
                 var dow = date.getDay();
                 var dk = DAY_KEYS[dow];
@@ -521,17 +534,11 @@
             return y + '-' + m + '-' + d;
         }
 
-        // Month navigation
+        // Month switching
         window.app = {
-            prevMonth: function() {
-                currentMonth--;
-                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-                loadSchedule();
-            },
-            nextMonth: function() {
-                currentMonth++;
-                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-                loadSchedule();
+            switchMonth: function(mode) {
+                viewMode = mode;
+                render();
             }
         };
 
