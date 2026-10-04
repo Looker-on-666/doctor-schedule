@@ -12,24 +12,24 @@
   "exceptions": {},
   "locations": {
     "东城": {
-      "full": "北京东城中医医院",
+      "full": "北京东城中医医院（和平里兴化路11号）",
       "phone": "010-62170649",
-      "map": "https://uri.amap.com/marker?coord=gaode&name=北京东城中医医院"
+      "map": "https://uri.amap.com/marker?coord=gaode&name=北京东城中医医院(和平里兴化路11号)"
     },
     "博爱堂": {
-      "full": "博爱堂西站路店",
+      "full": "博爱堂西站馆（北京西站南路2号）",
       "phone": "010-68939940",
-      "map": "https://uri.amap.com/marker?coord=gaode&name=博爱堂西站路店"
+      "map": "https://uri.amap.com/marker?coord=gaode&name=博爱堂西站馆(北京西站南路2号)"
     },
     "弘医堂": {
-      "full": "弘医堂",
+      "full": "北京弘医堂中医医院（团结湖北路2号）",
       "phone": "010-65382768",
-      "map": "https://uri.amap.com/marker?coord=gaode&name=弘医堂"
+      "map": "https://uri.amap.com/marker?coord=gaode&name=北京弘医堂中医医院(团结湖北路2号)"
     },
     "国医堂": {
-      "full": "国医堂",
+      "full": "北京国医堂中医医院（北三环东路11号）",
       "phone": "010-64286901",
-      "map": "https://uri.amap.com/marker?coord=gaode&name=国医堂"
+      "map": "https://uri.amap.com/marker?coord=gaode&name=北京国医堂中医医院(北三环东路11号)"
     }
   }
 }
