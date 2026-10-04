@@ -533,6 +533,8 @@
 
             // Locations
             if (data.locations) {
+                var locTimes = buildLocationTimes(data.regular);
+
                 html += '<div class="section">';
                 html += '<div class="section-title"><span class="section-icon">📍</span>出诊地点</div>';
 
@@ -540,6 +542,12 @@
                     var loc = data.locations[key];
                     html += '<div class="loc-item loc-' + key + '">';
                     html += '<div class="loc-name">' + loc.full + '</div>';
+                    if (locTimes[key]) {
+                        html += '<div class="loc-row">';
+                        html += '<span class="icon">🕐</span>';
+                        html += '<span>' + locTimes[key] + '</span>';
+                        html += '</div>';
+                    }
                     if (loc.phone) {
                         html += '<div class="loc-row">';
                         html += '<span class="icon">📞</span>';
@@ -578,6 +586,24 @@
             var m = String(date.getMonth() + 1).padStart(2, '0');
             var d = String(date.getDate()).padStart(2, '0');
             return y + '-' + m + '-' + d;
+        }
+
+        function buildLocationTimes(regular) {
+            if (!regular) return {};
+            var DAY_NAMES = {'一':'周一','二':'周二','三':'周三','四':'周四','五':'周五','六':'周六','日':'周日'};
+            var map = {};
+            Object.keys(regular).forEach(function(key) {
+                var m = key.match(/^([一二三四五六日])(上午|下午)$/);
+                if (!m) return;
+                var loc = regular[key];
+                var timeStr = '每' + DAY_NAMES[m[1]] + m[2];
+                if (!map[loc]) map[loc] = [];
+                map[loc].push(timeStr);
+            });
+            Object.keys(map).forEach(function(loc) {
+                map[loc] = map[loc].join('、');
+            });
+            return map;
         }
 
         // Month switching
