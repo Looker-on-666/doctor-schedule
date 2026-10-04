@@ -487,10 +487,10 @@
                         html += '<a href="tel:' + loc.phone.replace(/-/g, '') + '">' + loc.phone + '</a>';
                         html += '</div>';
                     }
-                    if (loc.map) {
+                    if (loc.address) {
                         html += '<div class="loc-row">';
-                        html += '<span class="icon">🗺️</span>';
-                        html += '<a href="' + loc.map + '" target="_blank" rel="noopener">导航前往</a>';
+                        html += '<span class="icon">📍</span>';
+                        html += '<span>' + loc.address + '</span>';
                         html += '</div>';
                     }
                     html += '</div>';
