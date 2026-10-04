@@ -9,7 +9,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            background: #f5f7fa;
+            background: #f7f5f0;
             color: #333;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
@@ -25,11 +25,11 @@
         .header {
             text-align: center;
             padding: 28px 16px;
-            background: linear-gradient(135deg, #4a90d9 0%, #5ba3e6 100%);
+            background: linear-gradient(135deg, #6b2d2d 0%, #8b4040 100%);
             border-radius: 16px;
             margin-bottom: 16px;
-            color: white;
-            box-shadow: 0 4px 16px rgba(74, 144, 217, 0.25);
+            color: #ede7dd;
+            box-shadow: 0 4px 16px rgba(107, 45, 45, 0.25);
         }
 
         .header h1 {
@@ -54,7 +54,7 @@
 
         .month-tab {
             background: white;
-            border: 1px solid #e0e6ed;
+            border: 1px solid #ddd8cf;
             border-radius: 10px;
             padding: 10px 16px;
             font-size: 14px;
@@ -65,9 +65,9 @@
         }
 
         .month-tab.active {
-            background: #4a90d9;
-            color: white;
-            border-color: #4a90d9;
+            background: #6b2d2d;
+            color: #ede7dd;
+            border-color: #6b2d2d;
         }
 
         .month-tab:active {
@@ -79,7 +79,7 @@
             padding: 14px 0;
             font-size: 18px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #3a2a2a;
         }
 
         /* Calendar */
@@ -97,7 +97,7 @@
             text-align: center;
             margin-bottom: 8px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #f0f2f5;
+            border-bottom: 1px solid #e8e4dc;
         }
 
         .weekdays span {
@@ -149,17 +149,17 @@
         }
 
         .day-cell.today {
-            background: #eef5fc;
+            background: #f5eeea;
         }
 
         .day-cell.today .day-num {
-            color: #4a90d9;
+            color: #6b2d2d;
             font-weight: 700;
         }
 
         .tag {
-            font-size: 9px;
-            padding: 1px 4px;
+            font-size: 10px;
+            padding: 2px 4px;
             border-radius: 3px;
             color: white;
             font-weight: 600;
@@ -167,11 +167,11 @@
             line-height: 1.4;
         }
 
-        .tag-东城 { background: #4a90d9; }
-        .tag-博爱堂 { background: #52c41a; }
-        .tag-弘医堂 { background: #fa8c16; }
-        .tag-国医堂 { background: #722ed1; }
-        .tag-停诊 { background: #ff4d4f; }
+        .tag-东城 { background: #5b7a6a; }
+        .tag-博爱堂 { background: #8b7332; }
+        .tag-弘医堂 { background: #955539; }
+        .tag-国医堂 { background: #4a5a7a; }
+        .tag-停诊 { background: #9d2933; }
 
         /* Legend */
         .legend {
@@ -208,7 +208,7 @@
         .section-title {
             font-size: 16px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #3a2a2a;
             margin-bottom: 14px;
             display: flex;
             align-items: center;
@@ -223,7 +223,7 @@
         .loc-item {
             padding: 14px;
             border-radius: 10px;
-            background: #f8fafc;
+            background: #f5f2ec;
             margin-bottom: 10px;
             border-left: 3px solid transparent;
         }
@@ -232,15 +232,15 @@
             margin-bottom: 0;
         }
 
-        .loc-item.loc-东城 { border-left-color: #4a90d9; }
-        .loc-item.loc-博爱堂 { border-left-color: #52c41a; }
-        .loc-item.loc-弘医堂 { border-left-color: #fa8c16; }
-        .loc-item.loc-国医堂 { border-left-color: #722ed1; }
+        .loc-item.loc-东城 { border-left-color: #5b7a6a; }
+        .loc-item.loc-博爱堂 { border-left-color: #8b7332; }
+        .loc-item.loc-弘医堂 { border-left-color: #955539; }
+        .loc-item.loc-国医堂 { border-left-color: #4a5a7a; }
 
         .loc-name {
             font-size: 15px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #3a2a2a;
             margin-bottom: 8px;
         }
 
@@ -264,7 +264,7 @@
         }
 
         .loc-row a {
-            color: #4a90d9;
+            color: #6b2d2d;
             text-decoration: none;
             font-weight: 500;
         }
@@ -312,8 +312,8 @@
         .loading .spinner {
             width: 24px;
             height: 24px;
-            border: 3px solid #e0e6ed;
-            border-top-color: #4a90d9;
+            border: 3px solid #e0dcd4;
+            border-top-color: #6b2d2d;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 12px;
@@ -327,7 +327,7 @@
         @media (min-width: 500px) {
             .container { padding: 24px; }
             .day-cell { font-size: 14px; }
-            .tag { font-size: 10px; }
+            .tag { font-size: 11px; }
         }
     </style>
 </head>
@@ -345,11 +345,11 @@
         const DAY_KEYS = { 1: '一', 2: '二', 3: '三', 4: '四', 5: '五', 6: '六', 0: '日' };
         const PERIODS = ['上午', '下午'];
         const LOCATION_COLORS = {
-            '东城': '#4a90d9',
-            '博爱堂': '#52c41a',
-            '弘医堂': '#fa8c16',
-            '国医堂': '#722ed1',
-            '停诊': '#ff4d4f'
+            '东城': '#5b7a6a',
+            '博爱堂': '#8b7332',
+            '弘医堂': '#955539',
+            '国医堂': '#4a5a7a',
+            '停诊': '#9d2933'
         };
 
         let scheduleData;
@@ -401,6 +401,8 @@
             const totalDays = lastDay.getDate();
 
             const monthStr = year + '年' + month + '月';
+            const [curY, curM] = scheduleData.month.split('-').map(Number);
+            const currentMonthStr = curY + '年' + curM + '月';
 
             let html = '';
 
@@ -414,7 +416,7 @@
             if (scheduleData.next) {
                 html += '<div class="month-tabs">';
                 html += '<button class="month-tab' + (viewMode === 'current' ? ' active' : '') + '" onclick="app.switchMonth(\'current\')">';
-                html += monthStr + '（本月）</button>';
+                html += currentMonthStr + '（本月）</button>';
                 
                 const [nextY, nextM] = scheduleData.next.month.split('-').map(Number);
                 const nextMonthStr = nextY + '年' + nextM + '月';
@@ -447,15 +449,16 @@
                 var dk = DAY_KEYS[dow];
 
                 var slots = [];
+                var exc = data.exceptions && data.exceptions[dateStr];
 
-                // Check exceptions first
-                if (data.exceptions && data.exceptions[dateStr]) {
-                    slots.push({ period: '', name: data.exceptions[dateStr] });
+                if (typeof exc === 'string') {
+                    slots.push({ period: '', name: exc });
                 } else {
-                    // Regular schedule
                     PERIODS.forEach(function(period) {
                         var key = dk + period;
-                        if (data.regular && data.regular[key]) {
+                        if (exc && exc[key]) {
+                            slots.push({ period: period, name: exc[key] });
+                        } else if (data.regular && data.regular[key]) {
                             slots.push({ period: period, name: data.regular[key] });
                         }
                     });
@@ -467,7 +470,8 @@
                 html += '<div class="' + classes + '">';
                 html += '<span class="day-num">' + d + '</span>';
                 slots.forEach(function(s) {
-                    html += '<span class="tag tag-' + s.name + '">' + s.name + '</span>';
+                    var label = s.period ? s.period + s.name : s.name;
+                    html += '<span class="tag tag-' + s.name + '">' + label + '</span>';
                 });
                 html += '</div>';
             }

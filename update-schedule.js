@@ -103,13 +103,25 @@ rl.question('请选择 (1/2/q)：', (choice) => {
         process.exit(1);
       }
 
-      rl.question('特殊日期（如 2026-11-05=停诊，多个用逗号分隔，直接回车跳过）：', (exceptions) => {
+      rl.question('特殊日期（如 2026-11-05=停诊，或 2026-11-15=日上午:东城,日下午:博爱堂，多个用逗号分隔，直接回车跳过）：', (exceptions) => {
         const exc = {};
         if (exceptions) {
           exceptions.split(',').forEach(item => {
             const match = item.trim().match(/^(.+?)=(.+)$/);
             if (match) {
-              exc[match[1].trim()] = match[2].trim();
+              const dateKey = match[1].trim();
+              const val = match[2].trim();
+              if (val.includes(':')) {
+                exc[dateKey] = {};
+                val.split(',').forEach(slot => {
+                  const sm = slot.trim().match(/^(.+?):(.+)$/);
+                  if (sm) {
+                    exc[dateKey][sm[1].trim()] = sm[2].trim();
+                  }
+                });
+              } else {
+                exc[dateKey] = val;
+              }
             }
           });
         }
