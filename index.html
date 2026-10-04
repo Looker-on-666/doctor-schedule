@@ -557,7 +557,11 @@
                     if (loc.address) {
                         html += '<div class="loc-row">';
                         html += '<span class="icon">📍</span>';
-                        html += '<span>' + loc.address + '</span>';
+                        if (loc.lat && loc.lng) {
+                            html += '<a href="geo:' + loc.lat + ',' + loc.lng + '?q=' + encodeURIComponent(loc.full) + '">' + loc.address + '</a>';
+                        } else {
+                            html += '<span>' + loc.address + '</span>';
+                        }
                         html += '</div>';
                     }
                     html += '</div>';
