@@ -1,0 +1,35 @@
+{
+  "doctor": "陈明教授",
+  "month": "2026-10",
+  "notice": "各门诊部均需要提前预约挂号，具体挂号方式和放号时间请电话咨询各门诊部。",
+  "regular": {
+    "二下午": "东城",
+    "三上午": "博爱堂",
+    "四上午": "弘医堂",
+    "四下午": "国医堂",
+    "六上午": "弘医堂"
+  },
+  "exceptions": {},
+  "locations": {
+    "东城": {
+      "full": "北京东城中医医院",
+      "phone": "010-XXXX-XXXX",
+      "map": "https://uri.amap.com/marker?coord=gaode&name=北京东城中医医院"
+    },
+    "博爱堂": {
+      "full": "博爱堂西站路店",
+      "phone": "010-XXXX-XXXX",
+      "map": "https://uri.amap.com/marker?coord=gaode&name=博爱堂西站路店"
+    },
+    "弘医堂": {
+      "full": "弘医堂",
+      "phone": "010-XXXX-XXXX",
+      "map": "https://uri.amap.com/marker?coord=gaode&name=弘医堂"
+    },
+    "国医堂": {
+      "full": "国医堂",
+      "phone": "010-XXXX-XXXX",
+      "map": "https://uri.amap.com/marker?coord=gaode&name=国医堂"
+    }
+  }
+}
