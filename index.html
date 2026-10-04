@@ -348,6 +348,78 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Map modal */
+        .map-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .map-modal {
+            background: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 16px 24px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .map-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #3a2a2a;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .map-modal-addr {
+            font-size: 13px;
+            color: #999;
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 16px;
+        }
+
+        .map-modal-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            background: #f5f2ec;
+            color: #3a2a2a;
+        }
+
+        .map-modal-btn:active {
+            background: #ebe5db;
+        }
+
+        .map-modal-cancel {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 4px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: center;
+            background: transparent;
+            color: #999;
+        }
+
+        .map-modal-cancel:active {
+            background: #f5f2ec;
+        }
+
         /* Responsive */
         @media (min-width: 500px) {
             .container { padding: 24px; }
@@ -558,7 +630,7 @@
                         html += '<div class="loc-row">';
                         html += '<span class="icon">📍</span>';
                         if (loc.lat && loc.lng) {
-                            html += '<a href="https://apis.map.qq.com/uri/v1/marker?marker=coord:' + loc.lat + ',' + loc.lng + ';title:' + encodeURIComponent(loc.full) + ';addr:' + encodeURIComponent(loc.address) + '&referer=doctor_schedule" target="_blank">' + loc.address + '</a>';
+                            html += '<a href="javascript:void(0)" onclick="app.openMap(\'' + loc.lat + '\',\'' + loc.lng + '\',\'' + encodeURIComponent(loc.full) + '\',\'' + encodeURIComponent(loc.address) + '\')" style="color:#6b2d2d;text-decoration:none;font-weight:500">' + loc.address + '</a>';
                         } else {
                             html += '<span>' + loc.address + '</span>';
                         }
@@ -610,11 +682,33 @@
             return map;
         }
 
-        // Month switching
+        // Month switching & map modal
         window.app = {
             switchMonth: function(mode) {
                 viewMode = mode;
                 render();
+            },
+            openMap: function(lat, lng, nameEnc, addrEnc) {
+                var name = decodeURIComponent(nameEnc);
+                var addr = decodeURIComponent(addrEnc);
+                var tencentUrl = 'https://apis.map.qq.com/uri/v1/marker?marker=coord:' + lat + ',' + lng + ';title:' + nameEnc + ';addr:' + addrEnc + '&referer=doctor_schedule';
+                var gaodeUrl = 'https://uri.amap.com/marker?position=' + lng + ',' + lat + '&name=' + nameEnc + '&address=' + addrEnc + '&coordinate=gaode&callnative=0';
+                var baiduUrl = 'https://api.map.baidu.com/marker?location=' + lat + ',' + lng + '&title=' + nameEnc + '&content=' + addrEnc + '&output=html';
+
+                var overlay = document.createElement('div');
+                overlay.className = 'map-modal-overlay';
+                overlay.innerHTML = '<div class="map-modal">' +
+                    '<div class="map-modal-title">选择地图</div>' +
+                    '<div class="map-modal-addr">' + name + '</div>' +
+                    '<button class="map-modal-btn" onclick="window.location.href=\'' + tencentUrl + '\'">🗺️ 腾讯地图</button>' +
+                    '<button class="map-modal-btn" onclick="window.location.href=\'' + gaodeUrl + '\'">🗺️ 高德地图</button>' +
+                    '<button class="map-modal-btn" onclick="window.location.href=\'' + baiduUrl + '\'">🗺️ 百度地图</button>' +
+                    '<button class="map-modal-cancel" onclick="this.parentNode.parentNode.removeChild(this.parentNode)">取消</button>' +
+                    '</div>';
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) overlay.parentNode.removeChild(overlay);
+                });
+                document.body.appendChild(overlay);
             }
         };
 
