@@ -103,7 +103,7 @@ rl.question('请选择 (1/2/q)：', (choice) => {
         process.exit(1);
       }
 
-      rl.question('特殊日期（如 2026-11-05=停诊，或 2026-11-15=日上午:东城,日下午:博爱堂，多个用逗号分隔，直接回车跳过）：', (exceptions) => {
+      rl.question('特殊日期（如 2026-11-05=停诊，或 2026-11-15=上午:停诊,下午:东城，多个用逗号分隔，直接回车跳过）：', (exceptions) => {
         const exc = {};
         if (exceptions) {
           exceptions.split(',').forEach(item => {

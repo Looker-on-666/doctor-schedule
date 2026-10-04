@@ -473,11 +473,13 @@
                             if (typeof exc === 'string') {
                                 loc = (period === '上午') ? exc : '';
                             } else {
-                                var key = dk + period;
-                                if (exc && exc[key]) {
-                                    loc = exc[key];
-                                } else if (data.regular && data.regular[key]) {
-                                    loc = data.regular[key];
+                                if (exc && exc[period]) {
+                                    loc = exc[period];
+                                } else {
+                                    var key = dk + period;
+                                    if (data.regular && data.regular[key]) {
+                                        loc = data.regular[key];
+                                    }
                                 }
                             }
 
