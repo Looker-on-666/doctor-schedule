@@ -348,6 +348,90 @@
             to { transform: rotate(360deg); }
         }
 
+        /* QR code modal */
+        .qr-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 20px 20px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .qr-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #3a2a2a;
+            margin-bottom: 4px;
+        }
+
+        .qr-modal-hint {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .qr-modal-img-wrap {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            display: inline-block;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+        }
+
+        .qr-modal-img-wrap img {
+            display: block;
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .qr-modal-close {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: center;
+            background: transparent;
+            color: #999;
+        }
+
+        .qr-modal-close:active {
+            background: #f5f2ec;
+        }
+
+        /* Booking button */
+        .loc-book-btn {
+            display: inline-block;
+            background: #6b2d2d;
+            color: #ede7dd;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .loc-book-btn:active {
+            opacity: 0.8;
+        }
+
         /* Map modal */
         .map-modal-overlay {
             position: fixed;
@@ -636,6 +720,11 @@
                         }
                         html += '</div>';
                     }
+                    if (loc.qrcode) {
+                        html += '<div style="margin-top:10px">';
+                        html += '<button class="loc-book-btn" onclick="app.openQR(\'' + key + '\',\'' + encodeURIComponent(loc.full) + '\')">预约挂号</button>';
+                        html += '</div>';
+                    }
                     html += '</div>';
                 });
 
@@ -704,6 +793,24 @@
                     '<button class="map-modal-btn" onclick="window.location.href=\'' + gaodeUrl + '\'">🗺️ 高德地图</button>' +
                     '<button class="map-modal-btn" onclick="window.location.href=\'' + baiduUrl + '\'">🗺️ 百度地图</button>' +
                     '<button class="map-modal-cancel" onclick="this.parentNode.parentNode.removeChild(this.parentNode)">取消</button>' +
+                    '</div>';
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) overlay.parentNode.removeChild(overlay);
+                });
+                document.body.appendChild(overlay);
+            },
+            openQR: function(key, nameEnc) {
+                var name = decodeURIComponent(nameEnc);
+                var loc = scheduleData.locations[key];
+                if (!loc || !loc.qrcode) return;
+
+                var overlay = document.createElement('div');
+                overlay.className = 'qr-modal-overlay';
+                overlay.innerHTML = '<div class="qr-modal">' +
+                    '<div class="qr-modal-title">' + name + '</div>' +
+                    '<div class="qr-modal-hint">长按识别关注公众号预约挂号</div>' +
+                    '<div class="qr-modal-img-wrap"><img src="' + loc.qrcode + '" alt="' + name + '公众号"></div>' +
+                    '<button class="qr-modal-close" onclick="this.parentNode.parentNode.removeChild(this.parentNode)">关闭</button>' +
                     '</div>';
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) overlay.parentNode.removeChild(overlay);
