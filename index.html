@@ -501,6 +501,7 @@
         };
 
         let scheduleData;
+        let infoData;
         let viewMode = 'current';
 
         function init() {
@@ -509,9 +510,13 @@
 
         async function loadSchedule() {
             try {
-                const resp = await fetch('schedule.json?t=' + Date.now());
-                if (!resp.ok) throw new Error('Network error');
-                scheduleData = await resp.json();
+                const [sResp, iResp] = await Promise.all([
+                    fetch('schedule.json?t=' + Date.now()),
+                    fetch('info.json?t=' + Date.now())
+                ]);
+                if (!sResp.ok || !iResp) throw new Error('Network error');
+                scheduleData = await sResp.json();
+                infoData = await iResp.json();
                 viewMode = 'current';
                 render();
             } catch (e) {
@@ -524,15 +529,22 @@
             if (viewMode === 'next' && scheduleData.next) {
                 var n = scheduleData.next;
                 return {
-                    doctor: scheduleData.doctor,
+                    doctor: infoData.doctor,
                     month: n.month,
                     regular: n.regular,
                     exceptions: n.exceptions || {},
-                    locations: scheduleData.locations,
-                    notice: scheduleData.notice
+                    locations: infoData.locations,
+                    notice: infoData.notice
                 };
             }
-            return scheduleData;
+            return {
+                doctor: infoData.doctor,
+                month: scheduleData.month,
+                regular: scheduleData.regular,
+                exceptions: scheduleData.exceptions || {},
+                locations: infoData.locations,
+                notice: infoData.notice
+            };
         }
 
         function render() {
@@ -759,7 +771,7 @@
             },
             openQR: function(key, nameEnc) {
                 var name = decodeURIComponent(nameEnc);
-                var loc = scheduleData.locations[key];
+                var loc = infoData.locations[key];
                 if (!loc || !loc.qrcode) return;
 
                 var overlay = document.createElement('div');
