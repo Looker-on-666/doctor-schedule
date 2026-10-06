@@ -43,7 +43,8 @@ git push origin main
 
 ## 文件说明
 
-- `schedule.json` - 排班数据
+- `schedule.json` - 排班数据（月份、 regular、exceptions、next）
+- `info.json` - 静态信息（医生姓名、提示、出诊地点详情）
 - `index.html` - 页面
-- `qrcode.png` - 二维码（指向在线页面）
+- `qrcodes/` - 各门诊部微信公众号二维码
 - `update-schedule.js` - 更新脚本
