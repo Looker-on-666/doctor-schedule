@@ -19,11 +19,5 @@
       "上午": "停诊"
     }
   },
-  "next": {
-    "month": ,
-    "regular": {
-     
-    },
-    "exceptions": {}
-  }
+  "next": null
 }
