@@ -762,7 +762,7 @@
                     '<button class="map-modal-btn" onclick="window.location.href=\'' + tencentUrl + '\'">腾讯地图</button>' +
                     '<button class="map-modal-btn" onclick="window.location.href=\'' + gaodeUrl + '\'">高德地图</button>' +
                     '<button class="map-modal-btn" onclick="window.location.href=\'' + baiduUrl + '\'">百度地图</button>' +
-                    '<button class="map-modal-cancel" onclick="this.parentNode.parentNode.removeChild(this.parentNode)">取消</button>' +
+                    '<button class="map-modal-cancel" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)">取消</button>' +
                     '</div>';
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) overlay.parentNode.removeChild(overlay);
@@ -780,7 +780,7 @@
                     '<div class="qr-modal-title">' + name + '</div>' +
                     '<div class="qr-modal-hint">长按识别关注公众号预约挂号</div>' +
                     '<div class="qr-modal-img-wrap"><img src="' + loc.qrcode + '" alt="' + name + '公众号"></div>' +
-                    '<button class="qr-modal-close" onclick="this.parentNode.parentNode.removeChild(this.parentNode)">关闭</button>' +
+                    '<button class="qr-modal-close" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)">关闭</button>' +
                     '</div>';
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) overlay.parentNode.removeChild(overlay);
