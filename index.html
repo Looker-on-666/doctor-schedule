@@ -878,9 +878,15 @@
             html += '<div class="list-summary">';
             html += '<div class="list-summary-title">出诊时间</div>';
             
-            var slotOrder = ['一上午','周一下午','二上午','周二下午','三上午','周三下午','四上午','周四下午','五上午','周五下午','六上午','周六下午','日上午','周日下午'];
+            var dayOrder = {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '日': 7};
+            var periodOrder = {'上午': 1, '下午': 2};
             var sortedKeys = Object.keys(slotMap).sort(function(a, b) {
-                return slotOrder.indexOf(a) - slotOrder.indexOf(b);
+                var ma = a.match(/^([一二三四五六日])(上午|下午)$/);
+                var mb = b.match(/^([一二三四五六日])(上午|下午)$/);
+                if (!ma || !mb) return 0;
+                var dayDiff = dayOrder[ma[1]] - dayOrder[mb[1]];
+                if (dayDiff !== 0) return dayDiff;
+                return periodOrder[ma[2]] - periodOrder[mb[2]];
             });
             
             sortedKeys.forEach(function(slotKey) {
