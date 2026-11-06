@@ -472,6 +472,111 @@
             background: #f5f2ec;
         }
 
+        /* View toggle button */
+        .view-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 10px;
+            border: 1px solid #c8c0b4;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .view-toggle-btn {
+            flex: 1;
+            background: white;
+            border: none;
+            border-right: 1px solid #c8c0b4;
+            padding: 8px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .view-toggle-btn:last-child {
+            border-right: none;
+        }
+
+        .view-toggle-btn.active {
+            background: #6b2d2d;
+            color: #fff;
+        }
+
+        .view-toggle-btn:active {
+            opacity: 0.85;
+        }
+
+        /* List view */
+        .list-view {
+            background: white;
+            border: 1px solid #d8d2c8;
+            border-radius: 4px;
+            padding: 14px 12px;
+            margin-bottom: 12px;
+        }
+
+        .list-summary {
+            margin-bottom: 12px;
+        }
+
+        .list-summary-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #3a2a2a;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e8e2d8;
+        }
+
+        .list-summary-item {
+            display: flex;
+            align-items: baseline;
+            padding: 6px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .list-summary-time {
+            flex-shrink: 0;
+            width: 80px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .list-summary-dates {
+            flex: 1;
+            color: #3a2a2a;
+        }
+
+        .list-summary-loc {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: white;
+            margin-left: 4px;
+        }
+
+        .list-exceptions {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #e8e2d8;
+        }
+
+        .list-exceptions-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #3a2a2a;
+            margin-bottom: 6px;
+        }
+
+        .list-exception-item {
+            font-size: 13px;
+            color: #666;
+            padding: 3px 0;
+        }
+
         /* Responsive */
         @media (min-width: 500px) {
             .container { padding: 20px; }
@@ -503,6 +608,7 @@
         let scheduleData;
         let infoData;
         let viewMode = 'current';
+        let displayMode = localStorage.getItem('displayMode') || 'list';
 
         function init() {
             loadSchedule();
@@ -585,7 +691,14 @@
                 html += '</div>';
             }
 
+            // View toggle
+            html += '<div class="view-toggle">';
+            html += '<button class="view-toggle-btn' + (displayMode === 'list' ? ' active' : '') + '" onclick="app.switchView(\'list\')">列表视图</button>';
+            html += '<button class="view-toggle-btn' + (displayMode === 'calendar' ? ' active' : '') + '" onclick="app.switchView(\'calendar\')">日历视图</button>';
+            html += '</div>';
+
             // Calendar grid
+            if (displayMode === 'calendar') {
             html += '<div class="calendar">';
             html += '<div class="cal-grid">';
 
@@ -653,7 +766,7 @@
             html += '</div>';
             html += '</div>';
 
-            // Legend
+            // Legend (only in calendar mode)
             html += '<div class="legend">';
             Object.keys(LOCATION_COLORS).forEach(function(name) {
                 if (name === '停诊') return;
@@ -663,6 +776,11 @@
                 html += '</div>';
             });
             html += '</div>';
+
+            } else {
+                // List view
+                html += renderListView(data, year, displayMonth, totalDays);
+            }
 
             // Notice
             if (data.notice) {
@@ -717,6 +835,121 @@
             document.getElementById('app').innerHTML = html;
         }
 
+        function renderListView(data, year, displayMonth, totalDays) {
+            var DAY_NAMES = {'一':'周一','二':'周二','三':'周三','四':'周四','五':'周五','六':'周六','日':'周日'};
+            var html = '<div class="list-view">';
+            
+            // Build summary: group by time slot
+            var slotMap = {};
+            for (var day = 1; day <= totalDays; day++) {
+                var date = new Date(year, displayMonth, day);
+                var dateStr = formatDate(date);
+                var dayDow = date.getDay();
+                var dk = DAY_KEYS[dayDow];
+                
+                PERIODS.forEach(function(period) {
+                    var loc = '';
+                    var exc = data.exceptions && data.exceptions[dateStr];
+                    
+                    if (typeof exc === 'string') {
+                        loc = (period === '上午') ? exc : '';
+                    } else {
+                        if (exc && exc[period]) {
+                            loc = exc[period];
+                        } else {
+                            var key = dk + period;
+                            if (data.regular && data.regular[key]) {
+                                loc = data.regular[key];
+                            }
+                        }
+                    }
+                    
+                    if (loc && loc !== '停诊') {
+                        var slotKey = dk + period;
+                        if (!slotMap[slotKey]) {
+                            slotMap[slotKey] = {dates: [], location: loc};
+                        }
+                        slotMap[slotKey].dates.push(day);
+                    }
+                });
+            }
+            
+            // Render summary
+            html += '<div class="list-summary">';
+            html += '<div class="list-summary-title">出诊时间</div>';
+            
+            var slotOrder = ['一上午','周一下午','二上午','周二下午','三上午','周三下午','四上午','周四下午','五上午','周五下午','六上午','周六下午','日上午','周日下午'];
+            var sortedKeys = Object.keys(slotMap).sort(function(a, b) {
+                return slotOrder.indexOf(a) - slotOrder.indexOf(b);
+            });
+            
+            sortedKeys.forEach(function(slotKey) {
+                var slot = slotMap[slotKey];
+                var m = slotKey.match(/^([一二三四五六日])(上午|下午)$/);
+                if (!m) return;
+                
+                var dayName = DAY_NAMES[m[1]];
+                var period = m[2];
+                var color = LOCATION_COLORS[slot.location] || '#666';
+                
+                html += '<div class="list-summary-item">';
+                html += '<span class="list-summary-time">每' + dayName + period + '</span>';
+                html += '<span class="list-summary-dates">';
+                html += slot.dates.join('日、') + '日';
+                html += '<span class="list-summary-loc" style="background:' + color + '">' + slot.location + '</span>';
+                html += '</span>';
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            
+            // Render exceptions
+            var hasExceptions = false;
+            var exceptionHtml = '';
+            
+            Object.keys(data.exceptions || {}).forEach(function(dateStr) {
+                var exc = data.exceptions[dateStr];
+                var parts = dateStr.split('-');
+                var month = parseInt(parts[1]);
+                var day = parseInt(parts[2]);
+                
+                if (month - 1 !== displayMonth) return;
+                
+                if (typeof exc === 'string') {
+                    if (exc === '停诊') {
+                        hasExceptions = true;
+                        exceptionHtml += '<div class="list-exception-item">' + day + '日：全天停诊</div>';
+                    }
+                } else {
+                    PERIODS.forEach(function(period) {
+                        if (exc[period]) {
+                            hasExceptions = true;
+                            if (exc[period] === '停诊') {
+                                exceptionHtml += '<div class="list-exception-item">' + day + '日' + period + '：停诊</div>';
+                            } else {
+                                exceptionHtml += '<div class="list-exception-item">' + day + '日' + period + '：改为' + exc[period] + '</div>';
+                            }
+                        }
+                    });
+                }
+            });
+            
+            if (hasExceptions) {
+                html += '<div class="list-exceptions">';
+                html += '<div class="list-exceptions-title">停诊说明</div>';
+                html += exceptionHtml;
+                html += '</div>';
+            } else {
+                html += '<div class="list-exceptions">';
+                html += '<div class="list-exceptions-title">停诊说明</div>';
+                html += '<div class="list-exception-item">本月无停诊</div>';
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
         function formatDate(date) {
             var y = date.getFullYear();
             var m = String(date.getMonth() + 1).padStart(2, '0');
@@ -745,6 +978,11 @@
         window.app = {
             switchMonth: function(mode) {
                 viewMode = mode;
+                render();
+            },
+            switchView: function(mode) {
+                displayMode = mode;
+                localStorage.setItem('displayMode', mode);
                 render();
             },
             openMap: function(lat, lng, nameEnc, addrEnc) {
